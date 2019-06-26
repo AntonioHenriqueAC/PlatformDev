@@ -1,3 +1,4 @@
 {
-    "mongoURL": "mongodb+srv://opala:opala@devconnector-6uqpd.gcp.mongodb.net/test?retryWrites=true"
+    "mongoURL": "mongodb+srv://opala:opala@devconnector-6uqpd.gcp.mongodb.net/test?retryWrites=true",
+    "jwtSecret": "mysecrettoken"
 }
