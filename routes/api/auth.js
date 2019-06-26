@@ -69,15 +69,12 @@ router.post('/', [
                     }]
                 });
             }
-
             // return json web token (JWT)
             const payload = {
                 user: {
                     id: user.id
                 }
             }
-
-
 
             jwt.sign(
                 payload,
