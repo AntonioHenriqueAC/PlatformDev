@@ -32,7 +32,7 @@ router.get('/me', auth, async (req, res) => {
    }
 });
 
-// @route   post api/profile
+// @route   POST api/profile
 // @desc    create or update user profile
 // @access  private
 router.post(
@@ -162,6 +162,34 @@ router.get('/user/:user_id',
             });
          }
 
+         res.status(500).send('Server Error');
+      }
+   });
+
+// @route   DELETE api/profile
+// @desc    delete profile, user and posts
+// @access  private
+
+router.delete('/', auth,
+   async (req, res) => {
+      try {
+         // remove user posts
+
+         // remove profile
+         await Profile.findOneAndRemove({
+            user: req.user.id
+         });
+
+         // remove user
+         await User.findOneAndRemove({
+            _id: req.user.id
+         });
+
+         res.json({
+            msg: 'User deleted!'
+         });
+      } catch (err) {
+         console.error(err.message);
          res.status(500).send('Server Error');
       }
    });
