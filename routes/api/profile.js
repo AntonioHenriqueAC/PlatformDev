@@ -12,25 +12,28 @@ const User = require('../../models/User');
 // @route   GET api/profile/me
 // @desc    get current user
 // @access  private
-router.get('/me', auth, async (req, res) => {
-   try {
-      const profile = await Profile.findOne({
-         user: req.user.id
-      }).populate('user', ['name', 'avatar']);
+router.get(
+   '/me',
+   auth,
+   async (req, res) => {
+      try {
+         const profile = await Profile.findOne({
+            user: req.user.id
+         }).populate('user', ['name', 'avatar']);
 
-      if (!profile) {
-         return res.status(400).json({
-            msg: 'Não há perfil para esse usuário'
-         })
+         if (!profile) {
+            return res.status(400).json({
+               msg: 'Não há perfil para esse usuário'
+            })
+         }
+
+         res.json(profile);
+
+      } catch (err) {
+         console.error(err.message);
+         res.status(500).send('server error');
       }
-
-      res.json(profile);
-
-   } catch (err) {
-      console.error(err.message);
-      res.status(500).send('server error');
-   }
-});
+   });
 
 // @route   POST api/profile
 // @desc    create or update user profile
@@ -124,7 +127,8 @@ router.post(
 // @desc    geet all profiles
 // @access  public
 
-router.get('/',
+router.get(
+   '/',
    async (req, res) => {
       try {
          const profiles = await Profile.find().populate('user', ['name', 'avatar']);
@@ -140,7 +144,8 @@ router.get('/',
 // @desc    get profile by user id
 // @access  public
 
-router.get('/user/:user_id',
+router.get(
+   '/user/:user_id',
    async (req, res) => {
       try {
          const profile = await Profile.findOne({
@@ -170,10 +175,11 @@ router.get('/user/:user_id',
 // @desc    delete profile, user and posts
 // @access  private
 
-router.delete('/', auth,
+router.delete(
+   '/',
+   auth,
    async (req, res) => {
       try {
-         // remove user posts
 
          // remove profile
          await Profile.findOneAndRemove({
@@ -194,6 +200,68 @@ router.delete('/', auth,
       }
    });
 
+// // @route   PUT api/profile/experience
+// // @desc    Add profile experience
+// // @access  private
 
+// router.put(
+//    '/experience',
+//    // validation
+//    [
+//       auth,
+//       [
+//          check('title', 'Title is required').not().isEmpty,
+//          check('company', 'Company is required').not().isEmpty,
+//          check('from', 'From date is required').not().isEmpty
+//       ]
+//    ],
+//    async (req, res) => {
+//       const errors = validationResult(req);
+//       if (!errors.isEmpty()) {
+//          return res.status(400).json({
+//             errors: errors.array()
+//          });
+//       }
+
+//       // creating field variable
+//       const {
+//          title,
+//          company,
+//          location,
+//          from,
+//          current,
+//          to,
+//          description
+//       } = req.body;
+
+//       // creating object
+//       const newExp = {
+//          title,
+//          company,
+//          location,
+//          from,
+//          current,
+//          to,
+//          description
+//       }
+
+//       // code to execute
+//       try {
+//          const profile = await Profile.findOne({
+//             user: req.user.id
+//          });
+
+//          profile.experience.unshift(newExp);
+
+//          await profile.save();
+
+//          res.json(profile);
+
+//       } catch (err) {
+//          console.error(err.message);
+//          res.status(500).send('Server error!!');
+//       }
+
+//    });
 
 module.exports = router;
