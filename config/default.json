@@ -1,4 +1,6 @@
 {
-    "mongoURL": "mongodb+srv://opala:opala@bdev-iulzc.mongodb.net/test?retryWrites=true&w=majority",
-    "jwtSecret": "mysecrettoken"
+   "mongoURL": "mongodb+srv://opala:opala@bdev-iulzc.mongodb.net/test?retryWrites=true&w=majority",
+   "jwtSecret": "mysecrettoken",
+   "githubClientId": "1935e0d0e82d33479650",
+   "githubSecret": "c5d35913d2c49537789441e53ab541a6cd6742a5"
 }

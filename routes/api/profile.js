@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const request = require('request');
+const config = require('config');
 const auth = require('../../middleware/auth');
 const {
    check,
@@ -304,8 +306,8 @@ router.put(
       auth,
       [
          check('school', 'School is required').not().isEmpty(),
-         check('company', 'Company is required').not().isEmpty(),
-         check('from', 'From date is required').not().isEmpty()
+         check('degree', 'Degree is required').not().isEmpty(),
+         check('fieldofstudy', 'Field fo study is required').not().isEmpty()
       ]
    ],
    async (req, res) => {
@@ -319,8 +321,8 @@ router.put(
       // creating field variable
       const {
          school,
-         company,
-         location,
+         degree,
+         fieldofstudy,
          from,
          current,
          to,
@@ -328,17 +330,17 @@ router.put(
       } = req.body;
 
       // creating object
-      const newExp = {
+      const newEdu = {
          school,
          company,
-         location,
+         fieldofstudy,
          from,
          current,
          to,
          description
       };
 
-      console.log(newExp)
+      console.log(newEdu);
 
       // code to execute
       try {
@@ -347,7 +349,7 @@ router.put(
          });
          // console.log(profile.education)
 
-         profile.education.unshift(newExp);
+         profile.education.unshift(newEdu);
          // console.log(profile.education)
 
          await profile.save();
@@ -391,6 +393,40 @@ router.delete(
          console.error(err.message);
          res.status(500).send('Server error');
       }
-
    });
+
+
+// @route   DELETE api/profile/github/:username
+// @desc    get user from repos github
+// @access  public
+
+router.get('/github/:username', (req, res) => {
+   try {
+      const options = {
+         uri: `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc&client_id=${config.get('githubClientId')}¨&client_secret=${config.get('githubSecret')}`,
+         method: 'GET',
+         headers: {
+            'user-agent': 'node.js'
+         }
+      }
+
+      request(options, (error, response, body) => {
+         if (error) console.error(error);
+
+         if (response.statusCode !== 200) {
+            res.status(404).json({
+               msg: "No Github profile found"
+            });
+         }
+
+         res.json(JSON.parse(body));
+      })
+
+   } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+   }
+})
+
+
 module.exports = router;
